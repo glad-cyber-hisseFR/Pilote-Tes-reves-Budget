@@ -105,14 +105,28 @@ export const calculateTotalReserves = (reserves = []) => {
   return reserves.reduce((total, reserve) => total + reserve.amount, 0);
 };
 
+// Calculer le total des réserves pour un rêve spécifique
+export const calculateDreamReserves = (reserves = [], dreamId) => {
+  if (!dreamId || dreamId === 'global') return 0;
+  return reserves
+    .filter(reserve => reserve.assignedTo === dreamId)
+    .reduce((total, reserve) => total + reserve.amount, 0);
+};
+
+// Calculer le total des réserves globales (non assignées à un rêve)
+export const calculateGlobalReserves = (reserves = []) => {
+  return reserves
+    .filter(reserve => !reserve.assignedTo || reserve.assignedTo === 'global')
+    .reduce((total, reserve) => total + reserve.amount, 0);
+};
+
 // Obtenir les statistiques globales
 export const getFinancialStats = (budget, expenses, incomeEntries = [], reserves = []) => {
   const totalIncome = calculateTotalIncome(budget.categories, incomeEntries);
   const totalExpenses = calculateTotalExpenses(expenses);
   const balance = calculateBalance(totalIncome, totalExpenses);
-  const balanceSavings = calculateSavings(balance);
   const totalReserves = calculateTotalReserves(reserves);
-  const savings = balanceSavings + totalReserves;
+  const savings = totalReserves; // Économies = somme des réserves uniquement
 
   return {
     totalIncome,

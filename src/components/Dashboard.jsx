@@ -10,6 +10,7 @@ import { getData, saveExpense, saveIncomeEntry, saveReserve, updateSavings } fro
 import { 
   getFinancialStats, 
   calculateDreamProgress,
+  calculateDreamReserves,
   calculateSavingsVariation,
   isDreamAchieved
 } from '../utils/calculations';
@@ -186,12 +187,12 @@ const Dashboard = () => {
                     <h3 className="font-semibold text-gray-700">{dream.name}</h3>
                     {dream.targetAmount && (
                       <span className="text-sm text-gray-600">
-                        Objectif: {dream.targetAmount.toFixed(2)} €
+                        {calculateDreamReserves(data.reserves || [], dream.id).toFixed(2)} € / {dream.targetAmount.toFixed(2)} €
                       </span>
                     )}
                   </div>
                   <ProgressBar
-                    progress={dream.targetAmount ? calculateDreamProgress(stats.savings, dream.targetAmount) : 0}
+                    progress={dream.targetAmount ? calculateDreamProgress(calculateDreamReserves(data.reserves || [], dream.id), dream.targetAmount) : 0}
                     color="accent"
                     showPercentage={true}
                   />
@@ -257,6 +258,7 @@ const Dashboard = () => {
       {/* Formulaire d'ajout de réserve */}
       {showReserveForm && (
         <ReserveForm
+          dreams={data.dreams}
           onSubmit={handleAddReserve}
           onClose={() => setShowReserveForm(false)}
         />

@@ -4,7 +4,7 @@ import InspirationalQuote from './InspirationalQuote';
 import ProgressBar from './ProgressBar';
 import Toast from './Toast';
 import { getData, saveDreams, updateData } from '../utils/localStorage';
-import { calculateDreamProgress, formatCurrency, getFinancialStats } from '../utils/calculations';
+import { calculateDreamProgress, calculateDreamReserves, calculateGlobalReserves, formatCurrency, getFinancialStats } from '../utils/calculations';
 
 const DreamsPage = () => {
   const [data, setData] = useState(getData());
@@ -15,7 +15,9 @@ const DreamsPage = () => {
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    const financialStats = getFinancialStats(data.budget, data.expenses);
+    const reserves = data.reserves || [];
+    const incomeEntries = data.incomeEntries || [];
+    const financialStats = getFinancialStats(data.budget, data.expenses, incomeEntries, reserves);
     setStats(financialStats);
   }, [data]);
 
@@ -117,9 +119,14 @@ const DreamsPage = () => {
           <h2 className="text-xl font-bold text-gray-800 mb-4">
             Vos économies actuelles
           </h2>
-          <div className="text-4xl font-bold text-accent mb-4">
+          <div className="text-4xl font-bold text-accent mb-2">
             {formatCurrency(currentSavings)}
           </div>
+          <p className="text-sm text-gray-600 mb-4">
+            Total des réserves: {formatCurrency(currentSavings)}
+            {' • '}
+            Réserves globales: {formatCurrency(calculateGlobalReserves(data.reserves || []))}
+          </p>
           {totalTarget > 0 && (
             <div>
               <p className="text-sm text-gray-600 mb-2">
@@ -218,8 +225,12 @@ const DreamsPage = () => {
 
                     {!useGlobalGoal && dream.name && dream.targetAmount > 0 && (
                       <div>
+                        <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
+                          <span>Réserves allouées: {formatCurrency(calculateDreamReserves(data.reserves || [], dream.id))}</span>
+                          <span>Objectif: {formatCurrency(parseFloat(dream.targetAmount))}</span>
+                        </div>
                         <ProgressBar
-                          progress={calculateDreamProgress(currentSavings, parseFloat(dream.targetAmount))}
+                          progress={calculateDreamProgress(calculateDreamReserves(data.reserves || [], dream.id), parseFloat(dream.targetAmount))}
                           label={`Progression vers "${dream.name}"`}
                           color="accent"
                           showPercentage={true}

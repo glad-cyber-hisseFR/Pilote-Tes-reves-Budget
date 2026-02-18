@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { X, Plus } from 'lucide-react';
 
-const ReserveForm = ({ onSubmit, onClose }) => {
+const ReserveForm = ({ dreams, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     amount: '',
-    description: ''
+    description: '',
+    assignedTo: 'global' // 'global' ou l'id d'un rêve
   });
 
   const [errors, setErrors] = useState({});
@@ -39,7 +40,8 @@ const ReserveForm = ({ onSubmit, onClose }) => {
     setFormData({
       date: new Date().toISOString().split('T')[0],
       amount: '',
-      description: ''
+      description: '',
+      assignedTo: 'global'
     });
   };
 
@@ -115,6 +117,26 @@ const ReserveForm = ({ onSubmit, onClose }) => {
               placeholder="Ex: Économie pour voyage, Réserve urgence..."
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent resize-none"
             />
+          </div>
+
+          <div>
+            <label htmlFor="assignedTo" className="block text-sm font-medium text-gray-700 mb-1">
+              Attribuer cette réserve à
+            </label>
+            <select
+              id="assignedTo"
+              name="assignedTo"
+              value={formData.assignedTo}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+            >
+              <option value="global">Enveloppe globale des économies</option>
+              {dreams && dreams.length > 0 && dreams.map((dream, index) => (
+                <option key={dream.id || index} value={dream.id || `dream-${index}`}>
+                  {dream.name || `Rêve ${index + 1}`}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex gap-3 pt-4">
