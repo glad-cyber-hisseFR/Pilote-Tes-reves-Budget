@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Target } from 'lucide-react';
 import InspirationalQuote from './InspirationalQuote';
 import ProgressBar from './ProgressBar';
+import Toast from './Toast';
 import { getData, saveDreams, updateData } from '../utils/localStorage';
 import { calculateDreamProgress, formatCurrency, getFinancialStats } from '../utils/calculations';
 
@@ -11,6 +12,7 @@ const DreamsPage = () => {
   const [globalGoal, setGlobalGoal] = useState(data.globalSavingsGoal || '');
   const [useGlobalGoal, setUseGlobalGoal] = useState(data.globalSavingsGoal !== null);
   const [stats, setStats] = useState(null);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     const financialStats = getFinancialStats(data.budget, data.expenses);
@@ -69,7 +71,7 @@ const DreamsPage = () => {
     updateData(updatedData);
 
     setData(getData());
-    alert('Vos rêves ont été sauvegardés avec succès ! 🎉');
+    setShowToast(true);
   };
 
   const calculateTotalTargetAmount = () => {
@@ -87,6 +89,14 @@ const DreamsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      {showToast && (
+        <Toast
+          message="Vos rêves ont été sauvegardés avec succès ! 🎉"
+          type="success"
+          onClose={() => setShowToast(false)}
+        />
+      )}
+      
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">

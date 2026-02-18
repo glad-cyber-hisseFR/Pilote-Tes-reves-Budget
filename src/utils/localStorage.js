@@ -71,7 +71,7 @@ export const saveExpense = (expense) => {
   const data = getData();
   data.expenses.push({
     ...expense,
-    id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+    id: Date.now().toString() + Math.random().toString(36).substring(2, 11)
   });
   return saveData(data);
 };

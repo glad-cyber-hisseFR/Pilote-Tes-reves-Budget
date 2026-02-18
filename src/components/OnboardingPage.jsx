@@ -12,6 +12,7 @@ const OnboardingPage = ({ onComplete }) => {
   const [manualCategories, setManualCategories] = useState([
     { name: '', amount: '', period: 'mensuel' }
   ]);
+  const [validationError, setValidationError] = useState('');
 
   const handleExcelLoaded = (loadedCategories) => {
     setCategories(loadedCategories);
@@ -45,10 +46,11 @@ const OnboardingPage = ({ onComplete }) => {
       }));
 
     if (validCategories.length === 0) {
-      alert('Veuillez ajouter au moins une catégorie valide');
+      setValidationError('Veuillez ajouter au moins une catégorie valide');
       return;
     }
 
+    setValidationError('');
     setCategories(validCategories);
     setStep(2);
   };
@@ -137,6 +139,11 @@ const OnboardingPage = ({ onComplete }) => {
               />
             ) : (
               <div className="space-y-4">
+                {validationError && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    {validationError}
+                  </div>
+                )}
                 <div className="max-h-96 overflow-y-auto space-y-3">
                   {manualCategories.map((category, index) => (
                     <div key={index} className="flex gap-2">
