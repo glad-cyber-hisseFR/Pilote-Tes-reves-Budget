@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Plus, TrendingUp, TrendingDown, DollarSign, PiggyBank, Wallet } from 'lucide-react';
 import FinancialCard from './FinancialCard';
 import ExpenseForm from './ExpenseForm';
+import IncomeEntryForm from './IncomeEntryForm';
 import ProgressBar from './ProgressBar';
 import MotivationalMessage from './MotivationalMessage';
-import { getData, saveExpense, updateSavings } from '../utils/localStorage';
+import { getData, saveExpense, saveIncomeEntry, updateSavings } from '../utils/localStorage';
 import { 
   getFinancialStats, 
   calculateDreamProgress,
@@ -15,6 +16,7 @@ import {
 const Dashboard = () => {
   const [data, setData] = useState(getData());
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [showIncomeForm, setShowIncomeForm] = useState(false);
   const [stats, setStats] = useState(null);
   const [motivationalMessages, setMotivationalMessages] = useState([]);
 
@@ -23,7 +25,8 @@ const Dashboard = () => {
   }, [data]);
 
   const updateStats = () => {
-    const financialStats = getFinancialStats(data.budget, data.expenses);
+    const incomeEntries = data.incomeEntries || [];
+    const financialStats = getFinancialStats(data.budget, data.expenses, incomeEntries);
     setStats(financialStats);
 
     // Mettre à jour les économies
@@ -52,7 +55,7 @@ const Dashboard = () => {
     if (variation >= 10) {
       messages.push({
         type: 'encouragement',
-        message: '💪 Bravo, tu es en bonne voie !'
+        message: 'Bravo 🎉 tu es en bonne voie vers tes rêves !'
       });
     } else if (variation <= -10) {
       messages.push({
@@ -70,6 +73,12 @@ const Dashboard = () => {
     saveExpense(expense);
     setData(getData());
     setShowExpenseForm(false);
+  };
+
+  const handleAddIncome = (incomeEntry) => {
+    saveIncomeEntry(incomeEntry);
+    setData(getData());
+    setShowIncomeForm(false);
   };
 
   const handleCloseMessage = (index) => {
@@ -102,14 +111,21 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Bouton d'ajout de dépense */}
-        <div className="mb-6">
+        {/* Boutons d'ajout */}
+        <div className="mb-6 flex flex-col sm:flex-row gap-3">
           <button
             onClick={() => setShowExpenseForm(true)}
-            className="w-full md:w-auto px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
+            className="flex-1 sm:flex-none px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
           >
             <Plus className="w-5 h-5" />
             Ajouter une dépense
+          </button>
+          <button
+            onClick={() => setShowIncomeForm(true)}
+            className="flex-1 sm:flex-none px-6 py-3 bg-success text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            Ajouter une entrée d'argent
           </button>
         </div>
 
@@ -211,6 +227,14 @@ const Dashboard = () => {
           categories={data.budget.categories}
           onSubmit={handleAddExpense}
           onClose={() => setShowExpenseForm(false)}
+        />
+      )}
+
+      {/* Formulaire d'ajout d'entrée d'argent */}
+      {showIncomeForm && (
+        <IncomeEntryForm
+          onSubmit={handleAddIncome}
+          onClose={() => setShowIncomeForm(false)}
         />
       )}
     </div>

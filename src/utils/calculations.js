@@ -1,11 +1,19 @@
 // Calculs financiers pour l'application
 
 // Calculer le total des recettes
-export const calculateTotalIncome = (categories) => {
-  return categories.reduce((total, category) => {
+export const calculateTotalIncome = (categories, incomeEntries = []) => {
+  // Budget de base
+  const budgetIncome = categories.reduce((total, category) => {
     // On ne compte que les montants positifs comme recettes
     return total + (category.amount > 0 ? category.amount : 0);
   }, 0);
+  
+  // Entrées d'argent supplémentaires
+  const additionalIncome = incomeEntries.reduce((total, entry) => {
+    return total + entry.amount;
+  }, 0);
+  
+  return budgetIncome + additionalIncome;
 };
 
 // Calculer le total des dépenses
@@ -93,8 +101,8 @@ export const formatPercentage = (value) => {
 };
 
 // Obtenir les statistiques globales
-export const getFinancialStats = (budget, expenses) => {
-  const totalIncome = calculateTotalIncome(budget.categories);
+export const getFinancialStats = (budget, expenses, incomeEntries = []) => {
+  const totalIncome = calculateTotalIncome(budget.categories, incomeEntries);
   const totalExpenses = calculateTotalExpenses(expenses);
   const balance = calculateBalance(totalIncome, totalExpenses);
   const savings = calculateSavings(balance);

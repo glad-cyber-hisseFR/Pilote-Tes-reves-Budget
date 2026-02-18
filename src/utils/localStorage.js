@@ -12,6 +12,7 @@ const defaultData = {
     totalIncome: 0
   },
   expenses: [],
+  incomeEntries: [], // Nouvelles entrées d'argent
   savings: 0,
   dreams: [],
   globalSavingsGoal: null,
@@ -79,6 +80,26 @@ export const saveExpense = (expense) => {
 export const deleteExpense = (expenseId) => {
   const data = getData();
   data.expenses = data.expenses.filter(e => e.id !== expenseId);
+  return saveData(data);
+};
+
+export const saveIncomeEntry = (incomeEntry) => {
+  const data = getData();
+  if (!data.incomeEntries) {
+    data.incomeEntries = [];
+  }
+  data.incomeEntries.push({
+    ...incomeEntry,
+    id: Date.now().toString() + Math.random().toString(36).substring(2, 11)
+  });
+  return saveData(data);
+};
+
+export const deleteIncomeEntry = (incomeId) => {
+  const data = getData();
+  if (data.incomeEntries) {
+    data.incomeEntries = data.incomeEntries.filter(e => e.id !== incomeId);
+  }
   return saveData(data);
 };
 
