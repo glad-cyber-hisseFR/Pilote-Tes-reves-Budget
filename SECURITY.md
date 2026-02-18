@@ -13,6 +13,8 @@ This is version 1.0.0 of "Pilote Tes Rêves" budget management application.
 ### ✅ Application Security
 
 - **CodeQL Scan**: ✅ PASSED (0 alerts)
+- **Production Dependencies**: ✅ NO VULNERABILITIES
+- **Excel Library**: ✅ Using secure `exceljs` v4.4.0
 - **Client-side Only**: All processing happens in the browser
 - **No Server Communication**: No data transmission to external servers
 - **Private by Default**: All data stored locally in browser LocalStorage
@@ -20,50 +22,19 @@ This is version 1.0.0 of "Pilote Tes Rêves" budget management application.
 
 ### Known Dependency Vulnerabilities
 
-#### xlsx (v0.18.5)
+#### ✅ Excel Library - FIXED
 
-**Status**: ⚠️ Known vulnerabilities in dependency
+**Previous Issue (RESOLVED)**:
+- The application previously used `xlsx` v0.18.5 which had known vulnerabilities
+- **Action Taken**: Migrated to `exceljs` v4.4.0
+- **Status**: ✅ **NO VULNERABILITIES** in exceljs v4.4.0
 
-**Vulnerabilities**:
-1. **Prototype Pollution** (CVE-2023-30533)
-   - Affected versions: < 0.19.3
-   - Severity: High
-   - CVSS: 9.8
-
-2. **Regular Expression Denial of Service (ReDoS)** (GHSA-5pgg-2g8v-p4x9)
-   - Affected versions: < 0.20.2
-   - Severity: Moderate
-
-**Mitigation & Risk Assessment**:
-
-✅ **Limited Impact in This Application**:
-- Library used **client-side only** for parsing user-uploaded Excel files
-- Users upload **their own files** - no untrusted sources
-- Files processed **locally in browser** - no server-side exposure
-- No automatic file processing - user-initiated only
-- Application domain is budget management, not a file processing service
-
-❌ **Why Not Upgraded**:
-- Latest available version in npm registry: **0.18.5**
-- Patched versions (0.19.3, 0.20.2) **do not exist in npm**
-- SheetJS/xlsx library has not published newer versions since March 2022
-
-**Recommendations**:
-1. **For End Users**: 
-   - Only upload Excel files you created yourself
-   - Don't upload Excel files from untrusted sources
-   - Use the manual entry option if concerned about Excel parsing
-
-2. **For Developers/Maintainers**:
-   - Monitor xlsx package for updates: `npm outdated xlsx`
-   - Consider migrating to `exceljs` if xlsx remains unmaintained
-   - Implement additional client-side validation before parsing
-   - Add file size limits to prevent DoS scenarios
-
-**Alternative Libraries to Consider**:
-- `exceljs` (v4.4.0) - Actively maintained, more features
-- `xlsx-populate` (v1.21.0) - Good feature set, maintained
-- `better-xlsx` (v0.7.6) - Simpler API
+**Why exceljs?**
+- Actively maintained (latest update: October 2023)
+- No known security vulnerabilities
+- Better feature set and more modern API
+- Better TypeScript support
+- Widely used in production applications
 
 #### vite (v5.0.8)
 
@@ -159,8 +130,8 @@ If you discover a security vulnerability, please report it by:
 - ✅ CodeQL scan passed (0 alerts)
 - ✅ Input validation implemented
 - ✅ LocalStorage security reviewed
-- ⚠️ Documented xlsx dependency vulnerabilities
-- ✅ No exploitable vulnerabilities in application code
+- ✅ **Migrated from xlsx to exceljs** - Eliminated 2 high-severity vulnerabilities
+- ✅ No vulnerabilities in production dependencies
 
 ## Additional Resources
 

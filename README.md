@@ -42,7 +42,7 @@ L'application vous encourage automatiquement :
 - **React 18.2** - Framework JavaScript moderne
 - **Vite 5.0** - Build tool ultra-rapide
 - **Tailwind CSS 3.3** - Framework CSS utility-first
-- **xlsx (SheetJS)** - Lecture/écriture de fichiers Excel
+- **exceljs 4.4** - Lecture/écriture de fichiers Excel (sécurisé)
 - **Lucide React** - Icônes modernes et élégantes
 - **LocalStorage** - Stockage des données dans le navigateur
 
@@ -200,7 +200,7 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 ## 🙏 Remerciements
 
 - Icons par [Lucide](https://lucide.dev/)
-- Bibliothèque Excel par [SheetJS](https://sheetjs.com/)
+- Bibliothèque Excel par [ExcelJS](https://github.com/exceljs/exceljs)
 - Framework CSS par [Tailwind CSS](https://tailwindcss.com/)
 
 ---

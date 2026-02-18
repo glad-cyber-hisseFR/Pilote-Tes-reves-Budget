@@ -1,38 +1,51 @@
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 // Parser un fichier Excel pour extraire les données de budget
 export const parseExcelFile = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
+        const buffer = e.target.result;
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(buffer);
         
         // Lire la première feuille
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+        const worksheet = workbook.worksheets[0];
+        if (!worksheet) {
+          reject(new Error('Aucune feuille de calcul trouvée dans le fichier'));
+          return;
+        }
 
-        // Valider et formater les données
-        const categories = jsonData.map((row, index) => {
-          // Chercher les colonnes avec différentes variations de noms
-          const category = row['Catégorie'] || row['Categorie'] || row['Category'] || row['category'] || '';
-          const amount = parseFloat(row['Montant'] || row['Amount'] || row['amount'] || 0);
-          const period = (row['Période'] || row['Periode'] || row['Period'] || row['period'] || 'mensuel').toLowerCase();
-
-          if (!category || isNaN(amount)) {
-            console.warn(`Ligne ${index + 1} ignorée: données invalides`);
-            return null;
+        const categories = [];
+        let headerRow = null;
+        
+        // Trouver la ligne d'en-tête
+        worksheet.eachRow((row, rowNumber) => {
+          if (rowNumber === 1) {
+            headerRow = row.values;
+            return;
           }
 
-          return {
-            name: category,
+          // Lire les données
+          const rowValues = row.values;
+          const category = rowValues[1]; // Première colonne
+          const amount = parseFloat(rowValues[2]); // Deuxième colonne
+          const period = String(rowValues[3] || 'mensuel').toLowerCase(); // Troisième colonne
+
+          if (!category || isNaN(amount)) {
+            console.warn(`Ligne ${rowNumber} ignorée: données invalides`);
+            return;
+          }
+
+          categories.push({
+            name: String(category),
             amount: amount,
             period: period.includes('annuel') ? 'annuel' : 
                    period.includes('semestr') ? 'semestriel' : 'mensuel'
-          };
-        }).filter(item => item !== null);
+          });
+        });
 
         if (categories.length === 0) {
           reject(new Error('Aucune donnée valide trouvée dans le fichier Excel'));
@@ -79,24 +92,53 @@ export const normalizeBudgetToPeriod = (categories, targetPeriod) => {
 
 // Créer un fichier Excel template pour l'exemple
 export const generateExcelTemplate = () => {
-  const templateData = [
-    { 'Catégorie': 'Loyer', 'Montant': 800, 'Période': 'mensuel' },
-    { 'Catégorie': 'Alimentation', 'Montant': 400, 'Période': 'mensuel' },
-    { 'Catégorie': 'Transport', 'Montant': 150, 'Période': 'mensuel' },
-    { 'Catégorie': 'Loisirs', 'Montant': 200, 'Période': 'mensuel' },
-    { 'Catégorie': 'Assurance', 'Montant': 600, 'Période': 'semestriel' },
-    { 'Catégorie': 'Salaire', 'Montant': 24000, 'Période': 'annuel' }
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Budget');
+
+  // Définir les colonnes
+  worksheet.columns = [
+    { header: 'Catégorie', key: 'category', width: 20 },
+    { header: 'Montant', key: 'amount', width: 15 },
+    { header: 'Période', key: 'period', width: 15 }
   ];
 
-  const worksheet = XLSX.utils.json_to_sheet(templateData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Budget');
+  // Ajouter les données d'exemple
+  const templateData = [
+    { category: 'Loyer', amount: 800, period: 'mensuel' },
+    { category: 'Alimentation', amount: 400, period: 'mensuel' },
+    { category: 'Transport', amount: 150, period: 'mensuel' },
+    { category: 'Loisirs', amount: 200, period: 'mensuel' },
+    { category: 'Assurance', amount: 600, period: 'semestriel' },
+    { category: 'Salaire', amount: 24000, period: 'annuel' }
+  ];
+
+  templateData.forEach(data => {
+    worksheet.addRow(data);
+  });
+
+  // Styliser l'en-tête
+  worksheet.getRow(1).font = { bold: true };
+  worksheet.getRow(1).fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FF3B82F6' }
+  };
+  worksheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
 
   return workbook;
 };
 
 // Télécharger le template Excel
-export const downloadExcelTemplate = () => {
+export const downloadExcelTemplate = async () => {
   const workbook = generateExcelTemplate();
-  XLSX.writeFile(workbook, 'template_budget_pilote_tes_reves.xlsx');
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { 
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+  });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'template_budget_pilote_tes_reves.xlsx';
+  link.click();
+  window.URL.revokeObjectURL(url);
 };
