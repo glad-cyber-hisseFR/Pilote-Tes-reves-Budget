@@ -121,38 +121,31 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Boutons d'ajout */}
-        <div className="mb-6 flex flex-col sm:flex-row gap-3">
+        {/* Ligne 1: Boutons d'ajout entrée et dépense */}
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+          <button
+            onClick={() => setShowIncomeForm(true)}
+            className="px-6 py-3 bg-success text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            Ajouter une entrée
+          </button>
           <button
             onClick={() => setShowExpenseForm(true)}
-            className="flex-1 sm:flex-none px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
+            className="px-6 py-3 bg-alert text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
           >
             <Plus className="w-5 h-5" />
             Ajouter une dépense
           </button>
-          <button
-            onClick={() => setShowIncomeForm(true)}
-            className="flex-1 sm:flex-none px-6 py-3 bg-success text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
-          >
-            <Plus className="w-5 h-5" />
-            Ajouter une entrée d'argent
-          </button>
-          <button
-            onClick={() => setShowReserveForm(true)}
-            className="flex-1 sm:flex-none px-6 py-3 bg-accent text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 shadow-lg"
-          >
-            <Plus className="w-5 h-5" />
-            Ajouter une réserve
-          </button>
         </div>
 
-        {/* Indicateurs financiers */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Ligne 2: Cards Recettes et Dépenses */}
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
           <FinancialCard
             title="Total des Recettes"
             amount={stats.totalIncome}
             icon={<DollarSign />}
-            color="primary"
+            color="success"
           />
           <FinancialCard
             title="Total des Dépenses"
@@ -160,42 +153,54 @@ const Dashboard = () => {
             icon={<Wallet />}
             color="alert"
           />
-          <FinancialCard
-            title="Solde"
-            amount={stats.balance}
-            icon={stats.balance >= 0 ? <TrendingUp /> : <TrendingDown />}
-            color={stats.balance >= 0 ? 'success' : 'alert'}
-          />
-          <FinancialCard
-            title="Économies"
-            amount={stats.savings}
-            icon={<PiggyBank />}
-            color="accent"
-          />
         </div>
 
-        {/* Progression des rêves */}
-        {data.dreams.length > 0 && (
+        {/* Ligne 3: Solde centré et colonne Réserve/Économies à droite */}
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Colonne vide à gauche pour centrer le solde */}
+          <div className="hidden md:block"></div>
+          
+          {/* Solde au centre */}
+          <div>
+            <FinancialCard
+              title="Solde"
+              amount={stats.balance}
+              icon={stats.balance >= 0 ? <TrendingUp /> : <TrendingDown />}
+              color="primary"
+            />
+          </div>
+
+          {/* Colonne Réserve et Économies à droite */}
+          <div className="space-y-4">
+            <button
+              onClick={() => setShowReserveForm(true)}
+              className="w-full px-6 py-3 bg-accent text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 shadow-lg"
+            >
+              <Plus className="w-5 h-5" />
+              Ajouter une réserve
+            </button>
+            <FinancialCard
+              title="Économies"
+              amount={stats.savings}
+              icon={<PiggyBank />}
+              color="accent"
+            />
+          </div>
+        </div>
+
+        {/* Rêves - Bulles avec titres uniquement */}
+        {data.dreams.length > 0 && data.dreams.filter(d => d.name).length > 0 && (
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              Progression de vos rêves
+              🎯 Aperçu des 3 rêves de l'année
             </h2>
-            <div className="space-y-6">
-              {data.dreams.slice(0, 3).map((dream, index) => (
-                <div key={index}>
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold text-gray-700">{dream.name}</h3>
-                    {dream.targetAmount && (
-                      <span className="text-sm text-gray-600">
-                        {calculateDreamReserves(data.reserves || [], dream.id).toFixed(2)} € / {dream.targetAmount.toFixed(2)} €
-                      </span>
-                    )}
-                  </div>
-                  <ProgressBar
-                    progress={dream.targetAmount ? calculateDreamProgress(calculateDreamReserves(data.reserves || [], dream.id), dream.targetAmount) : 0}
-                    color="accent"
-                    showPercentage={true}
-                  />
+            <div className="flex flex-wrap gap-4">
+              {data.dreams.slice(0, 3).filter(d => d.name).map((dream, index) => (
+                <div
+                  key={index}
+                  className="flex-1 min-w-[150px] bg-gradient-to-br from-purple-500 to-accent text-white rounded-full px-6 py-4 shadow-lg text-center font-semibold"
+                >
+                  {dream.name}
                 </div>
               ))}
             </div>
