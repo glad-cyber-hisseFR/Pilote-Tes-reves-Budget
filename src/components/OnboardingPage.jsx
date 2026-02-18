@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { ChevronRight, FileSpreadsheet, Edit } from 'lucide-react';
+import { ChevronRight, FileSpreadsheet, Edit, User } from 'lucide-react';
 import BudgetUpload from './BudgetUpload';
-import { completeOnboarding, saveBudget } from '../utils/localStorage';
+import { completeOnboarding, saveBudget, saveUserProfile } from '../utils/localStorage';
 import { calculateTotalIncome } from '../utils/calculations';
 
 const OnboardingPage = ({ onComplete }) => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [budgetPeriod, setBudgetPeriod] = useState('mensuel');
   const [useExcel, setUseExcel] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -13,6 +13,31 @@ const OnboardingPage = ({ onComplete }) => {
     { name: '', amount: '', period: 'mensuel' }
   ]);
   const [validationError, setValidationError] = useState('');
+  
+  // User profile fields
+  const [userProfile, setUserProfile] = useState({
+    prenom: '',
+    nom: '',
+    sexe: '',
+    age: '',
+    adresse: ''
+  });
+
+  const handleProfileChange = (field, value) => {
+    setUserProfile({ ...userProfile, [field]: value });
+  };
+
+  const handleProfileSubmit = () => {
+    // Validation
+    if (!userProfile.prenom || !userProfile.nom || !userProfile.sexe) {
+      setValidationError('Veuillez remplir au moins le prénom, le nom et le sexe');
+      return;
+    }
+
+    setValidationError('');
+    saveUserProfile(userProfile);
+    setStep(1);
+  };
 
   const handleExcelLoaded = (loadedCategories) => {
     setCategories(loadedCategories);
@@ -70,7 +95,125 @@ const OnboardingPage = ({ onComplete }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary to-accent flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8">
-        {step === 1 ? (
+        {step === 0 ? (
+          <>
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                <User className="w-8 h-8 text-white" />
+              </div>
+              <h1 className="text-4xl font-bold text-gray-800 mb-2">
+                Bienvenue !
+              </h1>
+              <p className="text-gray-600">
+                Commençons par faire connaissance
+              </p>
+            </div>
+
+            {validationError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+                {validationError}
+              </div>
+            )}
+
+            <div className="space-y-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Prénom *
+                  </label>
+                  <input
+                    type="text"
+                    value={userProfile.prenom}
+                    onChange={(e) => handleProfileChange('prenom', e.target.value)}
+                    placeholder="Ex: Jean"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nom *
+                  </label>
+                  <input
+                    type="text"
+                    value={userProfile.nom}
+                    onChange={(e) => handleProfileChange('nom', e.target.value)}
+                    placeholder="Ex: Dupont"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Sexe *
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => handleProfileChange('sexe', 'homme')}
+                    className={`px-4 py-3 rounded-lg font-medium transition-all ${
+                      userProfile.sexe === 'homme'
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    Homme
+                  </button>
+                  <button
+                    onClick={() => handleProfileChange('sexe', 'femme')}
+                    className={`px-4 py-3 rounded-lg font-medium transition-all ${
+                      userProfile.sexe === 'femme'
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    Femme
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Âge
+                </label>
+                <input
+                  type="number"
+                  value={userProfile.age}
+                  onChange={(e) => handleProfileChange('age', e.target.value)}
+                  placeholder="Ex: 25"
+                  min="0"
+                  max="150"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Adresse
+                </label>
+                <input
+                  type="text"
+                  value={userProfile.adresse}
+                  onChange={(e) => handleProfileChange('adresse', e.target.value)}
+                  placeholder="Ex: 123 Rue de la Paix, Paris"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleProfileSubmit}
+              className="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 text-lg font-medium"
+            >
+              Continuer
+              <ChevronRight className="w-5 h-5" />
+            </button>
+
+            <p className="text-xs text-gray-500 text-center mt-4">
+              * Champs obligatoires
+            </p>
+          </>
+        ) : step === 1 ? (
           <>
             <div className="text-center mb-8">
               <h1 className="text-4xl font-bold text-gray-800 mb-2">

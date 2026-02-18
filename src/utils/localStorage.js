@@ -5,7 +5,14 @@ const STORAGE_KEY = 'pilote-tes-reves-data';
 const defaultData = {
   user: {
     hasCompletedOnboarding: false,
-    budgetPeriod: 'mensuel'
+    budgetPeriod: 'mensuel',
+    profile: {
+      prenom: '',
+      nom: '',
+      sexe: '',
+      age: '',
+      adresse: ''
+    }
   },
   budget: {
     categories: [],
@@ -142,4 +149,18 @@ export const updateSavings = (savings) => {
   data.previousSavings = data.savings; // Garder l'ancienne valeur
   data.savings = savings;
   return saveData(data);
+};
+
+export const saveUserProfile = (profile) => {
+  const data = getData();
+  if (!data.user.profile) {
+    data.user.profile = {};
+  }
+  data.user.profile = { ...data.user.profile, ...profile };
+  return saveData(data);
+};
+
+export const getUserProfile = () => {
+  const data = getData();
+  return data.user.profile || defaultData.user.profile;
 };
