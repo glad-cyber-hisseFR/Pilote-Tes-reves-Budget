@@ -13,6 +13,7 @@ const defaultData = {
   },
   expenses: [],
   incomeEntries: [], // Nouvelles entrées d'argent
+  reserves: [], // Réserves d'économies
   savings: 0,
   dreams: [],
   globalSavingsGoal: null,
@@ -99,6 +100,26 @@ export const deleteIncomeEntry = (incomeId) => {
   const data = getData();
   if (data.incomeEntries) {
     data.incomeEntries = data.incomeEntries.filter(e => e.id !== incomeId);
+  }
+  return saveData(data);
+};
+
+export const saveReserve = (reserve) => {
+  const data = getData();
+  if (!data.reserves) {
+    data.reserves = [];
+  }
+  data.reserves.push({
+    ...reserve,
+    id: Date.now().toString() + Math.random().toString(36).substring(2, 11)
+  });
+  return saveData(data);
+};
+
+export const deleteReserve = (reserveId) => {
+  const data = getData();
+  if (data.reserves) {
+    data.reserves = data.reserves.filter(e => e.id !== reserveId);
   }
   return saveData(data);
 };

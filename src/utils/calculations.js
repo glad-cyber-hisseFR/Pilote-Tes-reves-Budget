@@ -100,17 +100,25 @@ export const formatPercentage = (value) => {
   return `${value.toFixed(1)}%`;
 };
 
+// Calculer le total des réserves
+export const calculateTotalReserves = (reserves = []) => {
+  return reserves.reduce((total, reserve) => total + reserve.amount, 0);
+};
+
 // Obtenir les statistiques globales
-export const getFinancialStats = (budget, expenses, incomeEntries = []) => {
+export const getFinancialStats = (budget, expenses, incomeEntries = [], reserves = []) => {
   const totalIncome = calculateTotalIncome(budget.categories, incomeEntries);
   const totalExpenses = calculateTotalExpenses(expenses);
   const balance = calculateBalance(totalIncome, totalExpenses);
-  const savings = calculateSavings(balance);
+  const balanceSavings = calculateSavings(balance);
+  const totalReserves = calculateTotalReserves(reserves);
+  const savings = balanceSavings + totalReserves;
 
   return {
     totalIncome,
     totalExpenses,
     balance,
-    savings
+    savings,
+    totalReserves
   };
 };

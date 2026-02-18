@@ -3,9 +3,10 @@ import { Plus, TrendingUp, TrendingDown, DollarSign, PiggyBank, Wallet } from 'l
 import FinancialCard from './FinancialCard';
 import ExpenseForm from './ExpenseForm';
 import IncomeEntryForm from './IncomeEntryForm';
+import ReserveForm from './ReserveForm';
 import ProgressBar from './ProgressBar';
 import MotivationalMessage from './MotivationalMessage';
-import { getData, saveExpense, saveIncomeEntry, updateSavings } from '../utils/localStorage';
+import { getData, saveExpense, saveIncomeEntry, saveReserve, updateSavings } from '../utils/localStorage';
 import { 
   getFinancialStats, 
   calculateDreamProgress,
@@ -17,6 +18,7 @@ const Dashboard = () => {
   const [data, setData] = useState(getData());
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showIncomeForm, setShowIncomeForm] = useState(false);
+  const [showReserveForm, setShowReserveForm] = useState(false);
   const [stats, setStats] = useState(null);
   const [motivationalMessages, setMotivationalMessages] = useState([]);
 
@@ -26,7 +28,8 @@ const Dashboard = () => {
 
   const updateStats = () => {
     const incomeEntries = data.incomeEntries || [];
-    const financialStats = getFinancialStats(data.budget, data.expenses, incomeEntries);
+    const reserves = data.reserves || [];
+    const financialStats = getFinancialStats(data.budget, data.expenses, incomeEntries, reserves);
     setStats(financialStats);
 
     // Mettre à jour les économies
@@ -81,6 +84,12 @@ const Dashboard = () => {
     setShowIncomeForm(false);
   };
 
+  const handleAddReserve = (reserve) => {
+    saveReserve(reserve);
+    setData(getData());
+    setShowReserveForm(false);
+  };
+
   const handleCloseMessage = (index) => {
     setMotivationalMessages(prev => prev.filter((_, i) => i !== index));
   };
@@ -126,6 +135,13 @@ const Dashboard = () => {
           >
             <Plus className="w-5 h-5" />
             Ajouter une entrée d'argent
+          </button>
+          <button
+            onClick={() => setShowReserveForm(true)}
+            className="flex-1 sm:flex-none px-6 py-3 bg-accent text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            Ajouter une réserve
           </button>
         </div>
 
@@ -235,6 +251,14 @@ const Dashboard = () => {
         <IncomeEntryForm
           onSubmit={handleAddIncome}
           onClose={() => setShowIncomeForm(false)}
+        />
+      )}
+
+      {/* Formulaire d'ajout de réserve */}
+      {showReserveForm && (
+        <ReserveForm
+          onSubmit={handleAddReserve}
+          onClose={() => setShowReserveForm(false)}
         />
       )}
     </div>
