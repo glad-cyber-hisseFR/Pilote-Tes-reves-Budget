@@ -31,22 +31,22 @@ function App() {
   // Get background style based on gender
   const getBackgroundStyle = () => {
     if (userGender === 'homme') {
-      // Male background: Cool blue gradient - try image first, fallback to gradient
+      // Male background: image with blue gradient overlay, fallback to gradient only
       return {
-        background: `
+        backgroundImage: `
           linear-gradient(135deg, rgba(59, 130, 246, 0.6) 0%, rgba(37, 99, 235, 0.8) 100%),
-          linear-gradient(45deg, #0ea5e9 0%, #3b82f6 50%, #6366f1 100%)
+          url('/images/background-male.jpg')
         `,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
       };
     } else if (userGender === 'femme') {
-      // Female background: Warm pink/purple gradient
+      // Female background: image with pink/purple gradient overlay, fallback to gradient only
       return {
-        background: `
+        backgroundImage: `
           linear-gradient(135deg, rgba(236, 72, 153, 0.6) 0%, rgba(219, 39, 119, 0.8) 100%),
-          linear-gradient(45deg, #f472b6 0%, #ec4899 50%, #db2777 100%)
+          url('/images/background-female.jpg')
         `,
         backgroundSize: 'cover',
         backgroundPosition: 'center',

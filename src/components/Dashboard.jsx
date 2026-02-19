@@ -139,6 +139,25 @@ const Dashboard = () => {
           </button>
         </div>
 
+        {/* Rêves - Bulles avec titres uniquement */}
+        {data.dreams.length > 0 && data.dreams.filter(d => d.name).length > 0 && (
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              🎯 Aperçu des 3 rêves de l'année
+            </h2>
+            <div className="flex flex-wrap gap-4">
+              {data.dreams.slice(0, 3).filter(d => d.name).map((dream, index) => (
+                <div
+                  key={index}
+                  className="flex-1 min-w-[150px] bg-gradient-to-br from-purple-500 to-accent text-white rounded-full px-6 py-4 shadow-lg text-center font-semibold"
+                >
+                  {dream.name}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Ligne 2: Cards Recettes et Dépenses */}
         <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
           <FinancialCard
@@ -187,25 +206,6 @@ const Dashboard = () => {
             />
           </div>
         </div>
-
-        {/* Rêves - Bulles avec titres uniquement */}
-        {data.dreams.length > 0 && data.dreams.filter(d => d.name).length > 0 && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              🎯 Aperçu des 3 rêves de l'année
-            </h2>
-            <div className="flex flex-wrap gap-4">
-              {data.dreams.slice(0, 3).filter(d => d.name).map((dream, index) => (
-                <div
-                  key={index}
-                  className="flex-1 min-w-[150px] bg-gradient-to-br from-purple-500 to-accent text-white rounded-full px-6 py-4 shadow-lg text-center font-semibold"
-                >
-                  {dream.name}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Liste des dernières dépenses */}
         {data.expenses.length > 0 && (
