@@ -121,24 +121,6 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Ligne 1: Boutons d'ajout entrée et dépense */}
-        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
-          <button
-            onClick={() => setShowIncomeForm(true)}
-            className="px-6 py-3 bg-success text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
-          >
-            <Plus className="w-5 h-5" />
-            Ajouter une entrée
-          </button>
-          <button
-            onClick={() => setShowExpenseForm(true)}
-            className="px-6 py-3 bg-alert text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
-          >
-            <Plus className="w-5 h-5" />
-            Ajouter une dépense
-          </button>
-        </div>
-
         {/* Rêves - Bulles avec titres uniquement */}
         {data.dreams.length > 0 && data.dreams.filter(d => d.name).length > 0 && (
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -157,6 +139,24 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+
+        {/* Ligne 1: Boutons d'ajout entrée et dépense */}
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+          <button
+            onClick={() => setShowIncomeForm(true)}
+            className="px-6 py-3 bg-success text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            Ajouter une entrée
+          </button>
+          <button
+            onClick={() => setShowExpenseForm(true)}
+            className="px-6 py-3 bg-alert text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            Ajouter une dépense
+          </button>
+        </div>
 
         {/* Ligne 2: Cards Recettes et Dépenses */}
         <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
