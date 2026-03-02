@@ -6,6 +6,8 @@ import IncomeEntryForm from './IncomeEntryForm';
 import ReserveForm from './ReserveForm';
 import ProgressBar from './ProgressBar';
 import MotivationalMessage from './MotivationalMessage';
+import BudgetChart from './BudgetChart';
+import ExpensePieChart from './ExpensePieChart';
 import { getData, saveExpense, saveIncomeEntry, saveReserve, updateSavings } from '../utils/localStorage';
 import { 
   getFinancialStats, 
@@ -205,6 +207,16 @@ const Dashboard = () => {
               color="accent"
             />
           </div>
+        </div>
+
+        {/* Graphiques */}
+        <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BudgetChart
+            totalIncome={stats.totalIncome}
+            totalExpenses={stats.totalExpenses}
+            savings={stats.savings}
+          />
+          <ExpensePieChart expenses={data.expenses} />
         </div>
 
         {/* Liste des dernières dépenses */}
