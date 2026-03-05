@@ -8,7 +8,7 @@ Une application web moderne et intuitive pour gérer votre budget et atteindre v
 
 ## 📸 Captures d'écran
 
-### 🚀 Page d'accueil — Configuration initiale
+### 🚀 Configuration du profil
 ![Onboarding](https://github.com/user-attachments/assets/ec3071fb-1029-4455-be9e-f0788175f4aa)
 
 ### ⚙️ Configuration du budget
