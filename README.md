@@ -6,6 +6,20 @@ Une application web moderne et intuitive pour gérer votre budget et atteindre v
 ![Vite](https://img.shields.io/badge/Vite-5.0-646CFF)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.3-38B2AC)
 
+## 📸 Captures d'écran
+
+### 🚀 Page d'accueil — Configuration initiale
+![Onboarding](https://github.com/user-attachments/assets/ec3071fb-1029-4455-be9e-f0788175f4aa)
+
+### ⚙️ Configuration du budget
+![Budget Setup](https://github.com/user-attachments/assets/441f1ac9-2c7a-4d12-8fad-7ca2c4a5eae2)
+
+### 💼 Tableau de Bord
+![Dashboard](https://github.com/user-attachments/assets/f777b33d-d627-4a81-99f1-8f4d87567e29)
+
+### 💭 Page des Rêves
+![Dreams](https://github.com/user-attachments/assets/28e93090-7e26-483e-bfdc-d168374ab355)
+
 ## 📋 Fonctionnalités
 
 ### 🚀 Configuration Initiale
